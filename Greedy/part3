@@ -1,0 +1,149 @@
+# 1. 모험가 길드 내 풀이
+
+N = str(input()) # 2 3 1 2 2
+M = list(map(str, input().split(' ')))
+M.sort(reverse = True) # 3 2 2 2 1
+M1 = list(M) # ['3', '2', '2', '2', '1']
+
+# 322/21 이런식으로 나누기
+cnt = 0
+first = int(M1[0]) 
+M1 = M1[first:]
+# 리스트에서 첫번째 원소가 3이면 3번째까지 지우고 cnt를 하나 올림
+cnt += 1
+while True:
+    # 남은 리스트에서 첫번째 원소가 2이면 2번째까지 지우고 cnt를 하나 올림
+    second = int(M1[0]) 
+    M1 = M1[second:]
+    cnt += 1
+    # 남은 리스트에 원소가 없으면 종료함
+    if len(M1) == 0: 
+        break
+print(cnt)
+
+
+
+
+# 2. 곱하기 혹은 더하기 내 풀이 수정
+s = str(input()) # 30914
+sList = list(s) # ['3', '0', '9', '1', '4']
+sList = [i for i in sList if i != '0'] # ['3', '9', '1', '4']
+
+result = 1
+for i in sList:
+    if i != 1:
+        result *= int(i)
+    else: result += i
+print(result) 
+
+
+
+
+
+# 3. 문자열 뒤집기 내 풀이
+
+s = str(input()) # 01010
+s1 = list(s) # ['0', '1', '0', '1', '0']
+mn = min(s1, key=s1.count) # 0, 1 중 덜 나온 값. 얘를 바꿀 거임.
+# mn = 1
+
+# 리스트에서 연속된 것만 지우되 순서는 유지하는 함수
+def delete(arr):
+    res = []
+    res.append(arr[0])
+    for i in range(0,len(arr)):
+        if arr[i] != arr[i-1]:
+            res.append(arr[i])
+    return res
+
+# 여기서 mn의 개수를 세기
+lst = delete(s)
+cnt = 0
+for i in lst:
+    if mn in i:
+        cnt += 1
+print(cnt)
+
+
+# 4. 만들 수 없는 금액 - 내 풀이
+
+num = int(input()) # 5
+coin = map(int,input().split(' ')) # 3 2 1 1 9
+
+# 일단 만들 수 있는 금액들을 다 구하고
+from itertools import combinations
+lsts=[]
+lis = list(coin)
+for i in range(1, len(lis) + 1): 
+    all = list(combinations(lis, i))
+    for j in all:
+        lsts.append(j)
+print(lsts)
+lstss = [] 
+for i in lsts:
+    lstss.append(sum(i))
+    lstss = list(lstss)
+    lstss.sort()
+    final = set(lstss)
+    # {1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16}
+print(lstss)
+print(final)
+# 이제 lstss에 없는 가장 작은 자연수를 구하면 됨
+for i in range(1,1000000):
+    if i not in final:
+        print(i)
+        break
+        
+        
+# 5. 볼링공 고르기 - 내 풀이
+
+import itertools
+N, M = map(int, input().split())
+K = list(map(int, input().split()))
+
+delK = list(set(K)) # 중복 제거한 값들
+
+# K에 있는 원소가 각각 몇개가 있는지
+dict = {}
+for i in delK:
+    dict[i] =  K.count(i)
+
+# 중복 제거한 값들을 이용해 조합 구하기
+result = list(itertools.combinations(delK,2)) 
+
+# 몇 개 있는지 매칭해서 곱하고 결과값들을 더하기
+plus = 0
+for i in result:
+    plus += dict[i[0]]*dict[i[1]]
+print(plus)
+
+# 6. 무지의 먹방 라이브 - 내 풀이
+def solution(food_times, k):
+    k += 1
+    dishes = []
+    for i in range(len(food_times)):
+      dishes.append((food_times[i], i))
+    
+    ground = 0
+    n_dishes = len(food_times) # 
+
+    dishes.sort()
+    for a in dishes: # a[0]: 시간, a[1]:접시 번호
+      if k < n_dishes * (a[0] - ground):
+        break
+      k -= n_dishes * (a[0] - ground)
+      ground = a[0]
+
+    current_dishes = []
+    for a in dishes:
+      if a[0] > ground:
+        current_dishes.append(a)
+      
+    if len(current_dishes) == 0:
+      return -1
+
+    return current_dishes[k%len(current_dishes)][1] + 1
+    
+foodTable = [3,1,2] # 모두 1 이상
+K = 5 # 몇 초 먹을 수 있는지
+print(solution(foodTable,K))# 1이 나와야 함.
